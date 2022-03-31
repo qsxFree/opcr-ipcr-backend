@@ -5,15 +5,15 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class Level extends Model {
+class Mfo extends Model {
     use HasFactory;
 
-    protected $table = "level";
-    protected $fillable = [
-        'name',
-        'access',
-        'description',
+    protected $table = "mfo";
 
+    protected $fillable = [
+        'code',
+        'name',
+        'description',
     ];
 
     protected $hidden = [

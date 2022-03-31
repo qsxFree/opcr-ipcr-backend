@@ -8,7 +8,7 @@ use Illuminate\Database\Eloquent\Model;
 class EmployeeProfile extends Model {
     use HasFactory;
 
-    protected $table = "employeeprofile";
+    protected $table = "employee_profile";
     protected $fillable = [
         'user',
         'role',

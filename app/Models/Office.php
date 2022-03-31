@@ -11,13 +11,11 @@ class Office extends Model {
     protected $fillable = [
         'code',
         'name',
-        'parent',
         'head',
         'is_delivery_unit',
     ];
 
     protected $hidden = [
-        'parent',
         'head',
         'created_at',
         'updated_at',
@@ -26,7 +24,12 @@ class Office extends Model {
     public function _head() {
         return $this->belongsTo(EmployeeProfile::class, "head");
     }
+
     public function _parent() {
-        return $this->belongsTo(Office::class, "parent");
+        return $this->belongsToMany(Office::class, 'office_parent_rl', 'parent', 'child');
+    }
+
+    public function _children() {
+        return $this->belongsToMany(Office::class, 'office_parent_rl', 'child', 'parent');
     }
 }

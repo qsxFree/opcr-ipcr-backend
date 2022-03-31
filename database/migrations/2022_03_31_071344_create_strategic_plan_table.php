@@ -14,7 +14,7 @@ class CreateStrategicPlanTable extends Migration {
         Schema::create('strategic_plan', function (Blueprint $table) {
             $table->integerIncrements('id');
             $table->integer('mfo')->unsigned();
-            $table->string('strategic_plan')->nullable();
+            $table->string('success_indicator')->nullable();
             $table->decimal('budget')->unsigned()->nullable();
             $table->tinyInteger('type')->unsigned();
             $table->integer('office')->unsigned()->nullable();
