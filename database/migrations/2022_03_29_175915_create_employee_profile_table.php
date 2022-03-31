@@ -13,13 +13,13 @@ class CreateEmployeeProfileTable extends Migration {
     public function up() {
         Schema::create('employee_profile', function (Blueprint $table) {
             $table->integerIncrements('id');
-            $table->integer('user')->unsigned();
+            $table->integer('user')->nullable()->unsigned();
             $table->integer('role')->unsigned();
             $table->string('first_name');
-            $table->string('middle_name');
+            $table->string('middle_name')->nullable();
             $table->string('last_name');
             $table->string('extension_name')->nullable();
-            $table->integer('office')->unsigned();
+            $table->integer('office')->unsigned()->nullable();
 
             $table->timestamps();
 
