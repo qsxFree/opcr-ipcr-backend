@@ -11,7 +11,7 @@ class CreateEmployeeProfileTable extends Migration {
      * @return void
      */
     public function up() {
-        Schema::create('employeeProfile', function (Blueprint $table) {
+        Schema::create('employee_profile', function (Blueprint $table) {
             $table->integerIncrements('id');
             $table->integer('user')->unsigned();
             $table->integer('role')->unsigned();
@@ -20,10 +20,12 @@ class CreateEmployeeProfileTable extends Migration {
             $table->string('last_name');
             $table->string('extension_name')->nullable();
             $table->integer('office')->unsigned();
-            $table->foreign('user')->references('id')->on('user');
-            $table->foreign('role')->references('id')->on('employeerole');
-            $table->foreign('office')->references('id')->on('office');
+
             $table->timestamps();
+
+            $table->foreign('user')->references('id')->on('user');
+            $table->foreign('role')->references('id')->on('employee_role');
+            //$table->foreign('office')->references('id')->on('office');
         });
     }
 
