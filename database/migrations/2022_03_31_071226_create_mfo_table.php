@@ -15,6 +15,7 @@ class CreateMfoTable extends Migration {
             $table->integerIncrements('id');
             $table->string('code')->unique();
             $table->string('name');
+            $table->integer('year')->unsigned();
             $table->string('description')->nullable();
             $table->timestamps();
         });
