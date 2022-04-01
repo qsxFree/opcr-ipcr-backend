@@ -26,10 +26,10 @@ class Office extends Model {
     }
 
     public function _parent() {
-        return $this->belongsToMany(Office::class, 'office_parent_rl', 'parent', 'child');
+        return $this->belongsToMany(Office::class, 'office_parent_rl', 'child', 'parent');
     }
 
     public function _children() {
-        return $this->belongsToMany(Office::class, 'office_parent_rl', 'child', 'parent');
+        return $this->belongsToMany(Office::class, 'office_parent_rl', 'parent', 'child');
     }
 }

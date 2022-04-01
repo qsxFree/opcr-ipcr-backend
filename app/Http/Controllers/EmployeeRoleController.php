@@ -11,8 +11,11 @@ class EmployeeRoleController extends Controller {
      *
      * @return \Illuminate\Http\Response
      */
-    public function index() {
-        return EmployeeRole::all();
+    public function index(Request $request) {
+        $search = $request->query('search');
+        return EmployeeRole::query()
+            ->where('role', 'like', "%{$search}%")
+            ->get();
     }
 
     /**

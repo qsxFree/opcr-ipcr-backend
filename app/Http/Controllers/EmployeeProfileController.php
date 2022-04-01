@@ -13,7 +13,7 @@ class EmployeeProfileController extends Controller {
      */
     public function index(Request $request) {
         $search = $request->query('search');
-        return EmployeeProfile::query()
+        return EmployeeProfile::with(['_role', '_office'])
             ->where('first_name', 'like', "%{$search}%")
             ->orWhere('last_name', 'like', "%{$search}%")
             ->get();

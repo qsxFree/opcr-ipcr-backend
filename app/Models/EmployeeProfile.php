@@ -26,4 +26,13 @@ class EmployeeProfile extends Model {
         'created_at',
         'updated_at',
     ];
+
+
+    public function _role() {
+        return $this->belongsTo(EmployeeRole::class, 'role');
+    }
+
+    public function _office() {
+        return $this->belongsTo(Office::class, 'office');
+    }
 }
