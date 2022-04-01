@@ -51,8 +51,13 @@ class EmployeeRoleController extends Controller {
      * @param  \App\Models\EmployeeRole  $employeeRole
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, EmployeeRole $employeeRole) {
-        //
+    public function update(Request $request, EmployeeRole $employeeRole, $id) {
+        try {
+            EmployeeRole::find($id)->update($request->all());
+            return response()->json("Role updated", 200);
+        } catch (\Exception $e) {
+            return response()->json("Error: " . $e, 500);
+        }
     }
 
     /**

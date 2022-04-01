@@ -28,12 +28,21 @@ class OfficeController extends Controller {
      */
     public function store(Request $request) {
         Log::info($request->all());
+        $data = $request->all();
         try {
-            $newOffice = new Office($request->all());
+            $newOffice = new Office([
+                'code' => $data['code'],
+                'name' => $data['name'],
+                'head' => $data['head'],
+                'is_delivery_unit' => $data['is_delivery_unit'],
+            ]);
             $newOffice->save();
+            $newOffice->_parent()->sync($request->parent);
+
             return response()->json("User created", 201);
         } catch (\Exception $e) {
-            return response()->json("Error: " . $e, 400);
+            Log::error($e);
+            return response()->json("Error: " . $e, 500);
         }
     }
 

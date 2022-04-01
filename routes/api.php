@@ -3,6 +3,8 @@
 use App\Http\Controllers\OfficeController;
 use App\Http\Controllers\EmployeeProfileController;
 use App\Http\Controllers\EmployeeRoleController;
+use App\Http\Controllers\MfoController;
+use App\Http\Controllers\StrategicPlanController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -38,4 +40,21 @@ Route::controller(EmployeeRoleController::class)->group(function () {
     Route::post('employee-role/', 'store');
     Route::put('employee-role/{id}', 'update');
     Route::delete('employee-role/{id}', 'destroy');
+});
+
+Route::controller(MfoController::class)->group(function () {
+    Route::get('mfo/list', 'index');
+    Route::get('mfo/{id}', 'show');
+    Route::post('mfo/', 'store');
+    Route::put('mfo/{id}', 'update');
+    Route::delete('mfo/{id}', 'destroy');
+});
+
+
+Route::controller(StrategicPlanController::class)->group(function () {
+    Route::get('strategic-plan/list', 'index');
+    Route::get('strategic-plan/{id}', 'show');
+    Route::post('strategic-plan/', 'store');
+    Route::put('strategic-plan/{id}', 'update');
+    Route::delete('strategic-plan/{id}', 'destroy');
 });

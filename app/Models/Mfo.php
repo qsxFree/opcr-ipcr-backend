@@ -14,6 +14,7 @@ class Mfo extends Model {
         'code',
         'name',
         'description',
+        'year'
     ];
 
     protected $hidden = [

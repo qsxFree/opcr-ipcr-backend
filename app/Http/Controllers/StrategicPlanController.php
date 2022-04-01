@@ -4,17 +4,12 @@ namespace App\Http\Controllers;
 
 use App\Models\StrategicPlan;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Log;
 
-class StrategicPlanController extends Controller
-{
-    /**
-     * Display a listing of the resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function index()
-    {
-        //
+class StrategicPlanController extends Controller {
+
+    public function index(Request $request) {
+        return StrategicPlan::with('_mfo', '_office')->get();
     }
 
     /**
@@ -23,9 +18,34 @@ class StrategicPlanController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request)
-    {
-        //
+    public function store(Request $request) {
+        $data = $request->all();
+        try {
+            collect($data['details'])->each(
+
+                function ($detail) use ($data) {
+                    Log::info([
+                        'mfo' => $data['mfo'],
+                        'type' => $data['type'],
+                        'success_indicator' => $detail['success_indicator'],
+                        'budget' => floatval($detail['budget']),
+                        'office' => $detail['office'],
+                    ]);
+                    $strategicPlan = new StrategicPlan([
+                        'mfo' => $data['mfo'],
+                        'type' => $data['type'],
+                        'success_indicator' => $detail['success_indicator'],
+                        'budget' => floatval($detail['budget']),
+                        'office' => $detail['office'],
+                    ]);
+                    $strategicPlan->save();
+                }
+            );
+            return response()->json("Strategic Plan created", 201);
+        } catch (\Exception $e) {
+            Log::info($e);
+            return response()->json("Error: " . $e, 500);
+        }
     }
 
     /**
@@ -34,8 +54,7 @@ class StrategicPlanController extends Controller
      * @param  \App\Models\StrategicPlan  $strategicPlan
      * @return \Illuminate\Http\Response
      */
-    public function show(StrategicPlan $strategicPlan)
-    {
+    public function show(StrategicPlan $strategicPlan) {
         //
     }
 
@@ -46,8 +65,7 @@ class StrategicPlanController extends Controller
      * @param  \App\Models\StrategicPlan  $strategicPlan
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, StrategicPlan $strategicPlan)
-    {
+    public function update(Request $request, StrategicPlan $strategicPlan) {
         //
     }
 
@@ -57,8 +75,7 @@ class StrategicPlanController extends Controller
      * @param  \App\Models\StrategicPlan  $strategicPlan
      * @return \Illuminate\Http\Response
      */
-    public function destroy(StrategicPlan $strategicPlan)
-    {
+    public function destroy(StrategicPlan $strategicPlan) {
         //
     }
 }

@@ -52,8 +52,13 @@ class EmployeeProfileController extends Controller {
      * @param  \App\Models\EmployeeProfile  $employeeProfile
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, EmployeeProfile $employeeProfile) {
-        //
+    public function update(Request $request, EmployeeProfile $employeeProfile, $id) {
+        try {
+            EmployeeProfile::find($id)->update($request->all());
+            return response()->json("Employee updated", 200);
+        } catch (\Exception $e) {
+            return response()->json("Error: " . $e, 500);
+        }
     }
 
     /**

@@ -7,11 +7,12 @@ use Illuminate\Database\Eloquent\Model;
 
 class StrategicPlan extends Model {
     use HasFactory;
-    protected $table = "office";
+    protected $table = "strategic_plan";
     protected $fillable = [
         'code',
         'mfo',
         'success_indicator',
+        'budget',
         'type',
         'office',
     ];
