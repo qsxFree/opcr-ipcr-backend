@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Office;
+use Exception;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
 
@@ -13,11 +14,16 @@ class OfficeController extends Controller {
      * @return \Illuminate\Http\Response
      */
     public function index(Request $request) {
-        $search = $request->query('search');
-        return Office::with(['_head', '_parent'])
-            ->where('name', 'like', "%{$search}%")
-            ->orWhere('code', 'like', "%{$search}%")
-            ->get();
+        try {
+            $search = $request->query('search');
+            return Office::with(['_head', '_parent'])
+                ->where('name', 'like', "%{$search}%")
+                ->orWhere('code', 'like', "%{$search}%")
+                ->get();
+        } catch (Exception $e) {
+            Log::error($e);
+            return response('Error on retrieving offices', 500);
+        }
     }
 
     /**
