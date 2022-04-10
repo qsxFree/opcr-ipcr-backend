@@ -3,7 +3,9 @@
 namespace App\Http\Controllers;
 
 use App\Models\EmployeeRole;
+use App\Models\User;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 class EmployeeRoleController extends Controller {
     /**
@@ -13,6 +15,16 @@ class EmployeeRoleController extends Controller {
      */
     public function index(Request $request) {
         $search = $request->query('search');
+        $user = User::with(['_employee_profile._role._office', '_level'])
+            ->find(Auth::user()->id);
+
+        if ($user->_level->name === 'HEAD') {
+            return EmployeeRole::with('_office')
+                ->where('role', 'like', "%{$search}%")
+                ->where('office', $user->_employee_profile->_role->_office->id)
+                ->get();
+        }
+
         return EmployeeRole::with('_office')
             ->where('role', 'like', "%{$search}%")
             ->get();
