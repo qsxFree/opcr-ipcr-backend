@@ -10,9 +10,21 @@ class LevelSeeder extends Seeder {
 
     public function run() {
         DB::table('level')->insert([
-            'name' => "Administrator",
-            'access' => '*',
-            'description' => "All access",
+            [
+                'name' => "Administrator",
+                'access' => '*',
+                'description' => "Admin access",
+            ],
+            [
+                'name' => "Head",
+                'access' => '*',
+                'description' => "Head access",
+            ],
+            [
+                'name' => "General",
+                'access' => '*',
+                'description' => "General access",
+            ]
         ]);
     }
 }

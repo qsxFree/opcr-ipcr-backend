@@ -14,6 +14,12 @@ class UserSeeder extends Seeder {
      */
     public function run() {
         DB::table('user')->insert([
+            'username' => 'admin-user',
+            'level' => 2,
+            'password' => Hash::make('admin'),
+        ]);
+
+        DB::table('user')->insert([
             'username' => 'head-user',
             'level' => 2,
             'password' => Hash::make('head'),
