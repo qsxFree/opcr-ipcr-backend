@@ -29,4 +29,8 @@ class EmployeeProfile extends Model {
     public function _role() {
         return $this->belongsTo(EmployeeRole::class, 'role');
     }
+
+    public function _user() {
+        return $this->belongsTo(User::class, 'user');
+    }
 }
