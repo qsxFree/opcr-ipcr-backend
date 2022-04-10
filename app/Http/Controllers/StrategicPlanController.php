@@ -12,6 +12,25 @@ use Illuminate\Support\Facades\Log;
 class StrategicPlanController extends Controller {
 
     public function index(Request $request) {
+        $employee_id = $request->query('employee_id');
+
+        if ($employee_id) {
+            return StrategicPlan::with('_mfo', '_office')
+                ->whereHas('_accountable', function ($query) use ($employee_id) {
+                    $query->where('id', $employee_id);
+                })
+                ->get();
+        }
+
+        $user = User::with(['_employee_profile._role._office', '_level'])
+            ->find(Auth::user()->id);
+
+
+        if ($user->_level->name === 'HEAD') {
+            $officeId = $user->_employee_profile->_role->_office->id;
+            return StrategicPlan::with('_mfo', '_office')->where('office', $officeId)->get();
+        }
+
         return StrategicPlan::with('_mfo', '_office')->get();
     }
 
