@@ -31,4 +31,8 @@ class StrategicPlan extends Model {
     public function _office() {
         return $this->belongsTo(Office::class, "office");
     }
+
+    public function _accountable() {
+        return $this->belongsToMany(EmployeeProfile::class, 'strategic_employee', 'strategic_plan', 'employee');
+    }
 }
