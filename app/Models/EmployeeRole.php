@@ -10,6 +10,11 @@ class EmployeeRole extends Model {
     protected $table = 'employee_role';
     protected $fillable = [
         'role',
+        'office'
     ];
-    protected $hidden = ['created_at', 'updated_at',];
+    protected $hidden = ['office', 'created_at', 'updated_at',];
+
+    public function _office() {
+        return $this->belongsTo(Office::class, 'office');
+    }
 }

@@ -16,11 +16,9 @@ class EmployeeProfile extends Model {
         'middle_name',
         'last_name',
         'extension_name',
-        'office',
     ];
 
     protected $hidden = [
-        'office',
         'user',
         'role',
         'created_at',
@@ -30,9 +28,5 @@ class EmployeeProfile extends Model {
 
     public function _role() {
         return $this->belongsTo(EmployeeRole::class, 'role');
-    }
-
-    public function _office() {
-        return $this->belongsTo(Office::class, 'office');
     }
 }

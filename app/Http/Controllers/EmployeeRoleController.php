@@ -13,7 +13,7 @@ class EmployeeRoleController extends Controller {
      */
     public function index(Request $request) {
         $search = $request->query('search');
-        return EmployeeRole::query()
+        return EmployeeRole::with('_office')
             ->where('role', 'like', "%{$search}%")
             ->get();
     }
