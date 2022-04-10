@@ -27,6 +27,10 @@ class User extends Authenticatable {
     ];
 
     public function _level() {
-        return $this->belongsTo(AccountLevel::class, "level");
+        return $this->belongsTo(Level::class, "level");
+    }
+
+    public function _employee_profile() {
+        return $this->hasOne(EmployeeProfile::class, "id");
     }
 }
