@@ -14,6 +14,7 @@ class CreateEmployeeRoleTable extends Migration {
         Schema::create('employee_role', function (Blueprint $table) {
             $table->integerIncrements('id');
             $table->string('role')->unique();
+            $table->integer('office')->unsigned();
             $table->timestamps();
         });
     }

@@ -15,7 +15,7 @@ class CreateStrategicPlanTable extends Migration {
             $table->integerIncrements('id');
             $table->integer('mfo')->unsigned();
             $table->string('success_indicator')->nullable();
-            $table->decimal('budget')->unsigned()->nullable();
+            $table->decimal('budget', 12, 2)->unsigned()->nullable();
             $table->tinyInteger('type')->unsigned();
             $table->integer('office')->unsigned()->nullable();
             $table->timestamps();

@@ -19,13 +19,11 @@ class CreateEmployeeProfileTable extends Migration {
             $table->string('middle_name')->nullable();
             $table->string('last_name');
             $table->string('extension_name')->nullable();
-            $table->integer('office')->unsigned()->nullable();
 
             $table->timestamps();
 
             $table->foreign('user')->references('id')->on('user');
             $table->foreign('role')->references('id')->on('employee_role');
-            //$table->foreign('office')->references('id')->on('office');
         });
     }
 

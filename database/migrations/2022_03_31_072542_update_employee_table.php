@@ -11,7 +11,11 @@ class UpdateEmployeeTable extends Migration {
      * @return void
      */
     public function up() {
-        Schema::table('employee_profile', function (Blueprint $table) {
+        // Schema::table('employee_profile', function (Blueprint $table) {
+        //     $table->foreign('office')->references('id')->on('office');
+        // });
+
+        Schema::table('employee_role', function (Blueprint $table) {
             $table->foreign('office')->references('id')->on('office');
         });
     }

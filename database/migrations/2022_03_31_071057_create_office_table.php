@@ -17,9 +17,9 @@ class CreateOfficeTable extends Migration {
             $table->string('name')->unique();
             $table->boolean('is_delivery_unit')->default(false);
             $table->integer('head')->unsigned()->nullable();
+            $table->timestamps();
 
             $table->foreign('head')->references('id')->on('employee_profile');
-            $table->timestamps();
         });
     }
 
