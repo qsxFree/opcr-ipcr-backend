@@ -16,7 +16,6 @@ class EmployeeSeeder extends Seeder {
                 'middle_name' => 'Q',
                 'last_name' => 'Zaratar',
                 'extension_name' => null,
-                'office' => 11
             ],
             [
                 'user' => null,
@@ -25,7 +24,6 @@ class EmployeeSeeder extends Seeder {
                 'middle_name' => null,
                 'last_name' => 'Sainz',
                 'extension_name' => null,
-                'office' => 11
             ],
             [
                 'user' => null,
@@ -34,7 +32,6 @@ class EmployeeSeeder extends Seeder {
                 'middle_name' => 'I',
                 'last_name' => 'Rayos',
                 'extension_name' => null,
-                'office' => 11
             ],
             [
                 'user' => null,
@@ -43,7 +40,6 @@ class EmployeeSeeder extends Seeder {
                 'middle_name' => null,
                 'last_name' => 'Morales',
                 'extension_name' => null,
-                'office' => 11
             ],
             [
                 'user' => null,
@@ -52,7 +48,6 @@ class EmployeeSeeder extends Seeder {
                 'middle_name' => null,
                 'last_name' => 'Pardo',
                 'extension_name' => null,
-                'office' => 11
             ],
         ]);
     }

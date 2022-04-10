@@ -9,9 +9,9 @@ class EmployeeRoleSeeder extends Seeder {
 
     public function run() {
         DB::table('employee_role')->insert([
-            ['role' => "MIS Head"],
-            ['role' => "Network Engineer",],
-            ['role' => "Computer Programmer",],
+            ['role' => "MIS Head", 'office' => 11],
+            ['role' => "Network Engineer", 'office' => 11],
+            ['role' => "Computer Programmer", 'office' => 11],
         ]);
     }
 }
