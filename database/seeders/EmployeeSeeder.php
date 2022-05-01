@@ -10,8 +10,16 @@ class EmployeeSeeder extends Seeder {
     public function run() {
         DB::table('employee_profile')->insert([
             [
-                'user' => null,
+                'user' => 1,
                 'role' => 1,
+                'first_name' => 'Adrian',
+                'middle_name' => null,
+                'last_name' => 'Rodriguez',
+                'extension_name' => null,
+            ],
+            [
+                'user' => 2,
+                'role' => 2,
                 'first_name' => 'Raymond',
                 'middle_name' => 'Q',
                 'last_name' => 'Zaratar',
@@ -19,7 +27,7 @@ class EmployeeSeeder extends Seeder {
             ],
             [
                 'user' => null,
-                'role' => 2,
+                'role' => 3,
                 'first_name' => 'Jerry',
                 'middle_name' => null,
                 'last_name' => 'Sainz',
@@ -34,7 +42,7 @@ class EmployeeSeeder extends Seeder {
                 'extension_name' => null,
             ],
             [
-                'user' => null,
+                'user' => 3,
                 'role' => 3,
                 'first_name' => 'Cedric Anthony',
                 'middle_name' => null,

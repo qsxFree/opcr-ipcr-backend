@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\StrategicPlan;
+use App\Models\StrategicPlanAndEmployee;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -17,7 +18,7 @@ class StrategicPlanController extends Controller {
         if ($employee_id) {
             return StrategicPlan::with('_mfo', '_office')
                 ->whereHas('_accountable', function ($query) use ($employee_id) {
-                    $query->where('id', $employee_id);
+                    $query->where('employee', $employee_id);
                 })
                 ->get();
         }
@@ -32,6 +33,24 @@ class StrategicPlanController extends Controller {
         }
 
         return StrategicPlan::with('_mfo', '_office')->get();
+    }
+
+    public function ipcrForApproval(Request $request) {
+        try{
+            $user = User::with(['_employee_profile._role._office', '_level'])
+            ->find(2);//Auth::user()->id
+            if ($user->_level->name === 'HEAD') {
+                $officeId = $user->_employee_profile->_role->_office->id;
+                return StrategicPlanAndEmployee::with('_employee','_strategic_plan')
+                    ->whereHas('employee.role.office.id', $officeId)
+                    ->where('status',1)
+                    ->get();
+            }
+
+        }catch(Exception $e){
+            Log::error($e);
+            return response()->json(['message' => 'Something went wrong'], 500);
+        }
     }
 
     /**

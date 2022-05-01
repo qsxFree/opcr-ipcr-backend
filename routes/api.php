@@ -5,6 +5,8 @@ use App\Http\Controllers\EmployeeProfileController;
 use App\Http\Controllers\EmployeeRoleController;
 use App\Http\Controllers\MfoController;
 use App\Http\Controllers\StrategicPlanController;
+use App\Http\Controllers\UserController;
+use App\Http\Controllers\PeriodController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -53,8 +55,26 @@ Route::controller(MfoController::class)->group(function () {
 
 Route::controller(StrategicPlanController::class)->group(function () {
     Route::get('strategic-plan/list', 'index');
+    Route::get('strategic-plan/ipcr/list', 'ipcrForApproval');
     Route::get('strategic-plan/{id}', 'show');
     Route::post('strategic-plan/', 'store');
     Route::put('strategic-plan/{id}', 'update');
     Route::delete('strategic-plan/{id}', 'destroy');
+});
+
+
+Route::controller(UserController::class)->group(function () {
+    Route::get('user/list', 'index');
+    Route::get('user/{id}', 'show');
+    Route::post('user/', 'store');
+    Route::put('user/{id}', 'update');
+    Route::delete('user/{id}', 'destroy');
+});
+
+Route::controller(PeriodController::class)->group(function () {
+    Route::get('period/list', 'index');
+    Route::get('period/{id}', 'show');
+    Route::post('period/', 'store');
+    Route::put('period/{id}', 'update');
+    Route::delete('period/{id}', 'destroy');
 });

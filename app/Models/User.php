@@ -31,6 +31,6 @@ class User extends Authenticatable {
     }
 
     public function _employee_profile() {
-        return $this->hasOne(EmployeeProfile::class, "id");
+        return $this->hasOne(EmployeeProfile::class, "user");
     }
 }

@@ -3,7 +3,10 @@
 namespace App\Http\Controllers;
 
 use App\Models\User;
+use App\Models\EmployeeProfile;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Hash;
 
 class UserController extends Controller {
     /**
@@ -23,12 +26,24 @@ class UserController extends Controller {
      */
     public function store(Request $request) {
         try {
-            $newUser = new User($request->all());
-            $newUser->password = Hash::make($request->password);
+            $data = $request->all();
+            //Add Validation here
+            $newUser = new User([
+                'username' => $data['username'],
+                'password' => Hash::make($data['password']),
+                'level' => $data['role']
+            ]);
+
             $newUser->save();
+
+            EmployeeProfile::find($data['employee_id'])->update([
+                'user' => $newUser->id,
+            ]);
+
             return response()->json("User created", 201);
         } catch (\Exception $e) {
-            return response()->json("Error: " . $e, 400);
+            Log::error($e);
+            return response()->json("Error: " . $e, 500);
         }
     }
 

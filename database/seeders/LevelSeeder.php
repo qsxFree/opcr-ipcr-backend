@@ -11,17 +11,17 @@ class LevelSeeder extends Seeder {
     public function run() {
         DB::table('level')->insert([
             [
-                'name' => "Administrator",
+                'name' => "ADMIN",
                 'access' => '*',
                 'description' => "Admin access",
             ],
             [
-                'name' => "Head",
+                'name' => "HEAD",
                 'access' => '*',
                 'description' => "Head access",
             ],
             [
-                'name' => "General",
+                'name' => "GENERAL",
                 'access' => '*',
                 'description' => "General access",
             ]

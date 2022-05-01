@@ -18,10 +18,13 @@ class CreateStrategicPlanTable extends Migration {
             $table->decimal('budget', 12, 2)->unsigned()->nullable();
             $table->tinyInteger('type')->unsigned();
             $table->integer('office')->unsigned()->nullable();
+            $table->integer('period')->unsigned()->nullable();
+            $table->tinyInteger('office')->unsigned()->nullable();
             $table->timestamps();
 
             $table->foreign('mfo')->references('id')->on('mfo');
             $table->foreign('office')->references('id')->on('office');
+            $table->foreign('period')->references('id')->on('period');
         });
     }
 
