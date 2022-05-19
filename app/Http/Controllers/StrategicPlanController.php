@@ -8,6 +8,7 @@ use App\Models\User;
 use Exception;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Http\Request;
+use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
@@ -18,13 +19,25 @@ class StrategicPlanController extends Controller
     public function index(Request $request)
     {
         $employee_id = $request->query('employee_id');
+        $activePeriod = DB::table('active_period')->select('value')->first();
 
         if ($employee_id) {
-            return StrategicPlan::with('_mfo', '_office')
-                ->whereHas('_accountable', function ($query) use ($employee_id) {
-                    $query->where('employee', $employee_id);
+            //StrategicPlanAndEmployee::with('st');
+
+
+            return StrategicPlanAndEmployee::with('_strategic_plan._mfo')
+                ->whereHas('_employee', function (Builder $query) use ($employee_id) {
+                    $query->where('id', $employee_id);
+                })
+                ->whereHas('_strategic_plan', function (Builder $query) use ($activePeriod) {
+                    $query->where('period', $activePeriod->value);
                 })
                 ->get();
+            // return StrategicPlan::with('_mfo', '_office')
+            //     ->whereHas('_accountable', function ($query) use ($employee_id) {
+            //         $query->where('employee', $employee_id);
+            //     })
+            //     ->get();
         }
 
         $user = User::with(['_employee_profile._role._office', '_level'])
@@ -33,7 +46,10 @@ class StrategicPlanController extends Controller
 
         if ($user->_level->name === 'HEAD') {
             $officeId = $user->_employee_profile->_role->_office->id;
-            return StrategicPlan::with('_mfo', '_office')->where('office', $officeId)->get();
+            return StrategicPlan::with('_mfo', '_office')
+                ->where('office', $officeId)
+                ->where('period', $activePeriod->value)
+                ->get();
         }
 
         return StrategicPlan::with('_mfo', '_office')->get();
@@ -41,15 +57,19 @@ class StrategicPlanController extends Controller
 
     public function ipcrForApproval(Request $request)
     {
+        $activePeriod = DB::table('active_period')->select('value')->first();
         try {
             $user = User::with(['_employee_profile._role._office', '_level'])
                 ->find(Auth::user()->id);
             if ($user->_level->name === 'HEAD') {
                 $officeId = $user->_employee_profile->_role->_office->id;
 
-                return StrategicPlanAndEmployee::with('_employee._role._office', '_strategic_plan._mfo')
+                return StrategicPlanAndEmployee::with('_employee._role._office', '_strategic_plan._mfo', '_approvedBy._role._office')
                     ->whereHas('_strategic_plan', function (Builder $query) use ($officeId) {
                         $query->where('office', $officeId);
+                    })
+                    ->whereHas('_strategic_plan', function (Builder $query) use ($activePeriod) {
+                        $query->where('period', $activePeriod->value);
                     })
                     ->whereIn('status', array(1, 2))
                     ->get();
@@ -62,6 +82,7 @@ class StrategicPlanController extends Controller
 
     public function opcrForApproval(Request $request)
     {
+        $activePeriod = DB::table('active_period')->select('value')->first();
         try {
             $user = User::with(['_employee_profile._role._office', '_level'])
                 ->find(Auth::user()->id);
@@ -77,12 +98,64 @@ class StrategicPlanController extends Controller
                     ->map((fn ($item) =>  $item->child))
                     ->toArray();
 
-                return StrategicPlan::with('_mfo', '_office._head')
+                return StrategicPlan::with('_mfo', '_office._head._role', '_approvedBy._role._office', '_accountable._role')
                     ->whereIn('office', $children)
+                    ->where('period', $activePeriod->value)
                     ->whereIn('status', array(1, 2))
                     ->get();
             }
         } catch (Exception $e) {
+            Log::error($e);
+            return response()->json(['message' => 'Something went wrong'], 500);
+        }
+    }
+
+
+    public function updateOpcr(Request $request, $id)
+    {
+        //the $id here represents the status
+        try {
+            $selectedData = $request->all()['data'];
+            if ($request->all()['id'] === 2) { //If the request is for Approving
+                DB::table('strategic_plan')
+                    ->whereIn('id', $selectedData)
+                    ->update(['status' => $id, 'date_approved' => Carbon::now(), 'approved_by' => Auth::user()->id]);
+            } else if ($request->all()['id'] === 0) { //Rejected
+                DB::table('strategic_plan')
+                    ->whereIn('id', $selectedData)
+                    ->update(['status' => $id, 'date_approved' => null, 'approved_by' => null]);
+            } else {
+                DB::table('strategic_plan')->whereIn('id', $selectedData)
+                    ->update(['status' => $id]);
+            }
+
+            return response("Success", 200);
+        } catch (\Exception $e) {
+            Log::error($e);
+            return response()->json(['message' => 'Something went wrong'], 500);
+        }
+    }
+
+    public function updateIpcr(Request $request, $id)
+    {
+        //the $id here represents the status
+        try {
+            $selectedData = $request->all()['data'];
+            if ($request->all()['id'] === 2) { //If the request is for Approving
+                DB::table('strategic_employee')
+                    ->whereIn('id', $selectedData)
+                    ->update(['status' => $id, 'date_approved' => Carbon::now(), 'approved_by' => Auth::user()->id]);
+            } else if ($request->all()['id'] === 0) { //Rejected
+                DB::table('strategic_employee')
+                    ->whereIn('id', $selectedData)
+                    ->update(['status' => $id, 'date_approved' => null, 'approved_by' => null]);
+            } else {
+                DB::table('strategic_employee')->whereIn('id', $selectedData)
+                    ->update(['status' => $id]);
+            }
+
+            return response("Success", 200);
+        } catch (\Exception $e) {
             Log::error($e);
             return response()->json(['message' => 'Something went wrong'], 500);
         }

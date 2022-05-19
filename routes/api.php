@@ -61,6 +61,9 @@ Route::controller(StrategicPlanController::class)->group(function () {
     Route::post('strategic-plan/', 'store');
     Route::put('strategic-plan/{id}', 'update');
     Route::delete('strategic-plan/{id}', 'destroy');
+
+    Route::put('strategic-plan/ipcr/{id}', 'updateIpcr');
+    Route::put('strategic-plan/opcr/{id}', 'updateOpcr');
 });
 
 
@@ -76,7 +79,8 @@ Route::controller(PeriodController::class)->group(function () {
     Route::get('period/list', 'index');
     Route::get('period/{id}', 'show');
     Route::post('period/', 'store');
-    Route::put('activate/{id}', 'activate');
+    Route::put('period/activate/{id}', 'activate');
+    Route::get('period/activate/{id}', 'getActivePeriod');
     Route::put('period/{id}', 'update');
     Route::delete('period/{id}', 'destroy');
 });

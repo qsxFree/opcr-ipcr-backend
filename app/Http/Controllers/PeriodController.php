@@ -4,8 +4,8 @@ namespace App\Http\Controllers;
 
 use App\Models\Period;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 
 class PeriodController extends Controller
 {
@@ -14,9 +14,13 @@ class PeriodController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index(Request $request)
     {
-        return Period::all();
+        $search = $request->query('search');
+        return Period::query()
+            ->where('name', 'like', "%{$search}%")
+            ->orWhere('description', 'like', "%{$search}%")
+            ->get();
     }
 
     /**
@@ -38,10 +42,24 @@ class PeriodController extends Controller
 
     public function activate(Request $request, $id)
     {
+        Log::info($id);
         try {
             DB::table('active_period')->update(['value' => $id]);
+            //$activePeriod = DB::table('active_period')->select('value')->first();
             //TODO: Add query here that updates the period of strategic_plan with 0  value in status.
-            return response("Period activated", 200);
+            $currentPeriod = Period::query()->where('id', $id)->first();
+            return response($currentPeriod, 200);
+        } catch (\Exception $e) {
+            Log::error($e);
+            return response()->json($e->getMessage(), 500);
+        }
+    }
+
+    public function getActivePeriod($id)
+    {
+        try {
+            $activePeriod = DB::table('active_period')->select('value')->first();
+            return response(Period::query()->where('id', $activePeriod->value)->first(), 200);
         } catch (\Exception $e) {
             Log::error($e);
             return response()->json($e->getMessage(), 500);

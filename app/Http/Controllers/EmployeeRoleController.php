@@ -6,6 +6,7 @@ use App\Models\EmployeeRole;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Log;
 
 class EmployeeRoleController extends Controller
 {
@@ -41,6 +42,7 @@ class EmployeeRoleController extends Controller
     public function store(Request $request)
     {
         try {
+            Log::info($request->all());
             $newRole = new EmployeeRole($request->all());
             $newRole->save();
             return response()->json("User created", 201);
