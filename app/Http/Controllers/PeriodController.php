@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Period;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\DB;
 
 class PeriodController extends Controller
 {
@@ -26,11 +27,23 @@ class PeriodController extends Controller
      */
     public function store(Request $request)
     {
-        try{
+        try {
             $period = Period::create($request->all());
             return response()->json($period, 201);
-        }catch(\Exception $e){
+        } catch (\Exception $e) {
             Log::info($e);
+            return response()->json($e->getMessage(), 500);
+        }
+    }
+
+    public function activate(Request $request, $id)
+    {
+        try {
+            DB::table('active_period')->update(['value' => $id]);
+            //TODO: Add query here that updates the period of strategic_plan with 0  value in status.
+            return response("Period activated", 200);
+        } catch (\Exception $e) {
+            Log::error($e);
             return response()->json($e->getMessage(), 500);
         }
     }

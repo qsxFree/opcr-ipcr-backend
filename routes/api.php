@@ -56,6 +56,7 @@ Route::controller(MfoController::class)->group(function () {
 Route::controller(StrategicPlanController::class)->group(function () {
     Route::get('strategic-plan/list', 'index');
     Route::get('strategic-plan/ipcr/list', 'ipcrForApproval');
+    Route::get('strategic-plan/opcr/list', 'opcrForApproval');
     Route::get('strategic-plan/{id}', 'show');
     Route::post('strategic-plan/', 'store');
     Route::put('strategic-plan/{id}', 'update');
@@ -75,6 +76,7 @@ Route::controller(PeriodController::class)->group(function () {
     Route::get('period/list', 'index');
     Route::get('period/{id}', 'show');
     Route::post('period/', 'store');
+    Route::put('activate/{id}', 'activate');
     Route::put('period/{id}', 'update');
     Route::delete('period/{id}', 'destroy');
 });

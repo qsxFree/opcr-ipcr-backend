@@ -5,14 +5,18 @@ namespace App\Http\Controllers;
 use App\Models\StrategicPlan;
 use App\Models\StrategicPlanAndEmployee;
 use App\Models\User;
+use Exception;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 
-class StrategicPlanController extends Controller {
+class StrategicPlanController extends Controller
+{
 
-    public function index(Request $request) {
+    public function index(Request $request)
+    {
         $employee_id = $request->query('employee_id');
 
         if ($employee_id) {
@@ -35,19 +39,50 @@ class StrategicPlanController extends Controller {
         return StrategicPlan::with('_mfo', '_office')->get();
     }
 
-    public function ipcrForApproval(Request $request) {
-        try{
+    public function ipcrForApproval(Request $request)
+    {
+        try {
             $user = User::with(['_employee_profile._role._office', '_level'])
-            ->find(2);//Auth::user()->id
+                ->find(Auth::user()->id);
             if ($user->_level->name === 'HEAD') {
                 $officeId = $user->_employee_profile->_role->_office->id;
-                return StrategicPlanAndEmployee::with('_employee','_strategic_plan')
-                    ->whereHas('employee.role.office.id', $officeId)
-                    ->where('status',1)
+
+                return StrategicPlanAndEmployee::with('_employee._role._office', '_strategic_plan._mfo')
+                    ->whereHas('_strategic_plan', function (Builder $query) use ($officeId) {
+                        $query->where('office', $officeId);
+                    })
+                    ->whereIn('status', array(1, 2))
                     ->get();
             }
+        } catch (Exception $e) {
+            Log::error($e);
+            return response()->json(['message' => 'Something went wrong'], 500);
+        }
+    }
 
-        }catch(Exception $e){
+    public function opcrForApproval(Request $request)
+    {
+        try {
+            $user = User::with(['_employee_profile._role._office', '_level'])
+                ->find(Auth::user()->id);
+            //TODO: add constraint here that checks if the current user is a head of the PMT
+
+            if ($user->_level->name === 'HEAD' || $user->_level->name === 'ADMIN') {
+                $officeId = $user->_employee_profile->_role->_office->id;
+
+                $children = DB::table('office_parent_rl')
+                    ->select('child')
+                    ->where('parent', $officeId)
+                    ->get()
+                    ->map((fn ($item) =>  $item->child))
+                    ->toArray();
+
+                return StrategicPlan::with('_mfo', '_office._head')
+                    ->whereIn('office', $children)
+                    ->whereIn('status', array(1, 2))
+                    ->get();
+            }
+        } catch (Exception $e) {
             Log::error($e);
             return response()->json(['message' => 'Something went wrong'], 500);
         }
@@ -59,7 +94,8 @@ class StrategicPlanController extends Controller {
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request) {
+    public function store(Request $request)
+    {
         $data = $request->all();
 
         $user = User::with(['_employee_profile._role._office', '_level'])->find(Auth::user()->id);
@@ -119,7 +155,8 @@ class StrategicPlanController extends Controller {
      * @param  \App\Models\StrategicPlan  $strategicPlan
      * @return \Illuminate\Http\Response
      */
-    public function show(StrategicPlan $strategicPlan) {
+    public function show(StrategicPlan $strategicPlan)
+    {
         //
     }
 
@@ -130,7 +167,8 @@ class StrategicPlanController extends Controller {
      * @param  \App\Models\StrategicPlan  $strategicPlan
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, StrategicPlan $strategicPlan) {
+    public function update(Request $request, StrategicPlan $strategicPlan)
+    {
         //
     }
 
@@ -140,7 +178,8 @@ class StrategicPlanController extends Controller {
      * @param  \App\Models\StrategicPlan  $strategicPlan
      * @return \Illuminate\Http\Response
      */
-    public function destroy(StrategicPlan $strategicPlan) {
+    public function destroy(StrategicPlan $strategicPlan)
+    {
         //
     }
 }

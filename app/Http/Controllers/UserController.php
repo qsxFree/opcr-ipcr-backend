@@ -8,13 +8,15 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Hash;
 
-class UserController extends Controller {
+class UserController extends Controller
+{
     /**
      * Display a listing of the resource.
      *
      * @return \Illuminate\Http\Response
      */
-    public function index() {
+    public function index()
+    {
         return User::with(['_level'])->get();
     }
 
@@ -24,7 +26,8 @@ class UserController extends Controller {
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request) {
+    public function store(Request $request)
+    {
         try {
             $data = $request->all();
             //Add Validation here
@@ -53,7 +56,8 @@ class UserController extends Controller {
      * @param  \App\Models\user  $user
      * @return \Illuminate\Http\Response
      */
-    public function show(User $id) {
+    public function show(User $id)
+    {
         return User::find($id);
     }
 
@@ -64,7 +68,8 @@ class UserController extends Controller {
      * @param  \App\Models\user  $user
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, user $user) {
+    public function update(Request $request, user $user)
+    {
         //
     }
 
@@ -74,7 +79,8 @@ class UserController extends Controller {
      * @param  \App\Models\user  $user
      * @return \Illuminate\Http\Response
      */
-    public function destroy(user $user) {
+    public function destroy(user $user)
+    {
         //
     }
 }

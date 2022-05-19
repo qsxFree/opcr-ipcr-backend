@@ -7,13 +7,15 @@ use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
-class EmployeeRoleController extends Controller {
+class EmployeeRoleController extends Controller
+{
     /**
      * Display a listing of the resource.
      *
      * @return \Illuminate\Http\Response
      */
-    public function index(Request $request) {
+    public function index(Request $request)
+    {
         $search = $request->query('search');
         $user = User::with(['_employee_profile._role._office', '_level'])
             ->find(Auth::user()->id);
@@ -21,7 +23,7 @@ class EmployeeRoleController extends Controller {
         if ($user->_level->name === 'HEAD') {
             return EmployeeRole::with('_office')
                 ->where('role', 'like', "%{$search}%")
-                ->where('office', $user->_employee_profile->_role->_office->id)
+                //->where('office', $user->_employee_profile->_role->_office->id)
                 ->get();
         }
 
@@ -36,7 +38,8 @@ class EmployeeRoleController extends Controller {
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request) {
+    public function store(Request $request)
+    {
         try {
             $newRole = new EmployeeRole($request->all());
             $newRole->save();
@@ -52,7 +55,8 @@ class EmployeeRoleController extends Controller {
      * @param  \App\Models\EmployeeRole  $employeeRole
      * @return \Illuminate\Http\Response
      */
-    public function show(EmployeeRole $id) {
+    public function show(EmployeeRole $id)
+    {
         return EmployeeRole::find($id);
     }
 
@@ -63,7 +67,8 @@ class EmployeeRoleController extends Controller {
      * @param  \App\Models\EmployeeRole  $employeeRole
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, EmployeeRole $employeeRole, $id) {
+    public function update(Request $request, EmployeeRole $employeeRole, $id)
+    {
         try {
             EmployeeRole::find($id)->update($request->all());
             return response()->json("Role updated", 200);
@@ -78,7 +83,8 @@ class EmployeeRoleController extends Controller {
      * @param  \App\Models\EmployeeRole  $employeeRole
      * @return \Illuminate\Http\Response
      */
-    public function destroy(EmployeeRole $employeeRole) {
+    public function destroy(EmployeeRole $employeeRole)
+    {
         //
     }
 }

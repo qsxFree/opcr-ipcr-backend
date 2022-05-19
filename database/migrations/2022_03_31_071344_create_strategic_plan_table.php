@@ -4,13 +4,15 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class CreateStrategicPlanTable extends Migration {
+class CreateStrategicPlanTable extends Migration
+{
     /**
      * Run the migrations.
      *
      * @return void
      */
-    public function up() {
+    public function up()
+    {
         Schema::create('strategic_plan', function (Blueprint $table) {
             $table->integerIncrements('id');
             $table->integer('mfo')->unsigned();
@@ -24,7 +26,7 @@ class CreateStrategicPlanTable extends Migration {
 
             $table->foreign('mfo')->references('id')->on('mfo');
             $table->foreign('office')->references('id')->on('office');
-            $table->foreign('period')->references('id')->on('period');
+            // $table->foreign('period')->references('id')->on('period');
         });
     }
 
@@ -33,7 +35,8 @@ class CreateStrategicPlanTable extends Migration {
      *
      * @return void
      */
-    public function down() {
+    public function down()
+    {
         Schema::dropIfExists('strategic_plan');
     }
 }

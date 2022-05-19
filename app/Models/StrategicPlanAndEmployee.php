@@ -10,14 +10,16 @@ class StrategicPlanAndEmployee extends Model
     use HasFactory;
 
     protected $table = 'strategic_employee';
-    protected $hidden = ['strategic_plan','employee'];
+    protected $hidden = ['strategic_plan', 'employee'];
     public $timestamps = false;
 
-    public function _strategic_plan(){
-        return $this->belongsTo(StrategicPlan::class,'strategic_plan');
+    public function _strategic_plan()
+    {
+        return $this->belongsTo(StrategicPlan::class, 'strategic_plan');
     }
 
-    public function _employee(){
-        return $this->belongsTo(EmployeeProfile::class,'employee');
+    public function _employee()
+    {
+        return $this->belongsTo(EmployeeProfile::class, 'employee');
     }
 }
