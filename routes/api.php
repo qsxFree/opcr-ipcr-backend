@@ -7,6 +7,7 @@ use App\Http\Controllers\MfoController;
 use App\Http\Controllers\StrategicPlanController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\PeriodController;
+use App\Models\AnalysisController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -83,4 +84,10 @@ Route::controller(PeriodController::class)->group(function () {
     Route::get('period/activate/{id}', 'getActivePeriod');
     Route::put('period/{id}', 'update');
     Route::delete('period/{id}', 'destroy');
+});
+
+Route::controller(AnalysisController::class)->group(function () {
+    Route::get('analysis/statistic/list', 'statistic');
+    Route::get('analysis/user-type/list', 'userType');
+    Route::get('analysis/budget-period/list', 'budgetByPeriod');
 });

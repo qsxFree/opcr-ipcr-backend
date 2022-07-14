@@ -20,17 +20,23 @@ class StrategicPlanController extends Controller
     {
         $employee_id = $request->query('employee_id');
         $activePeriod = DB::table('active_period')->select('value')->first();
-
+        Log::info($activePeriod->value);
+        $search = $request->query('search');
         if ($employee_id) {
             //StrategicPlanAndEmployee::with('st');
-
 
             return StrategicPlanAndEmployee::with('_strategic_plan._mfo')
                 ->whereHas('_employee', function (Builder $query) use ($employee_id) {
                     $query->where('id', $employee_id);
                 })
-                ->whereHas('_strategic_plan', function (Builder $query) use ($activePeriod) {
-                    $query->where('period', $activePeriod->value);
+                ->whereHas('_strategic_plan', function (Builder $query) use ($activePeriod, $search) {
+                    $query
+                        ->whereHas('_mfo', function (Builder $query1) use ($search) {
+                            $query1->where('name', 'like', '%' . $search . '%')
+                                ->orWhere('code', 'like', '%' . $search . '%');
+                        })
+                        ->where('period', $activePeriod->value)
+                        ->orWhere('success_indicator', 'like', "%{$search}%");
                 })
                 ->get();
             // return StrategicPlan::with('_mfo', '_office')
@@ -47,17 +53,30 @@ class StrategicPlanController extends Controller
         if ($user->_level->name === 'HEAD') {
             $officeId = $user->_employee_profile->_role->_office->id;
             return StrategicPlan::with('_mfo', '_office')
+                ->whereHas('_mfo', function (Builder $query1) use ($search) {
+                    $query1->where('name', 'like', '%' . $search . '%')
+                        ->orWhere('code', 'like', '%' . $search . '%');
+                })
+                ->orWhere('success_indicator', 'like', "%{$search}%")
                 ->where('office', $officeId)
                 ->where('period', $activePeriod->value)
                 ->get();
         }
 
-        return StrategicPlan::with('_mfo', '_office')->get();
+        return StrategicPlan::with('_mfo', '_office')
+            ->whereHas('_mfo', function (Builder $query1) use ($search) {
+                $query1->where('name', 'like', '%' . $search . '%')
+                    ->orWhere('code', 'like', '%' . $search . '%');
+            })
+            ->orWhere('success_indicator', 'like', "%{$search}%")
+            ->get();
     }
 
     public function ipcrForApproval(Request $request)
     {
+        $search = $request->query('search');
         $activePeriod = DB::table('active_period')->select('value')->first();
+        Log::info($activePeriod->value);
         try {
             $user = User::with(['_employee_profile._role._office', '_level'])
                 ->find(Auth::user()->id);
@@ -65,12 +84,15 @@ class StrategicPlanController extends Controller
                 $officeId = $user->_employee_profile->_role->_office->id;
 
                 return StrategicPlanAndEmployee::with('_employee._role._office', '_strategic_plan._mfo', '_approvedBy._role._office')
-                    ->whereHas('_strategic_plan', function (Builder $query) use ($officeId) {
-                        $query->where('office', $officeId);
+                    ->whereHas('_employee', function (Builder $query) use ($search) {
+                        $query->where('first_name', 'like', '%' . $search . '%')
+                            ->orWhere('last_name', 'like', '%' . $search . '%');
                     })
-                    ->whereHas('_strategic_plan', function (Builder $query) use ($activePeriod) {
-                        $query->where('period', $activePeriod->value);
+                    ->whereHas('_strategic_plan', function (Builder $query) use ($officeId, $activePeriod) {
+                        $query->where('office', $officeId)->where('period', $activePeriod->value);
                     })
+
+
                     ->whereIn('status', array(1, 2))
                     ->get();
             }
@@ -82,6 +104,7 @@ class StrategicPlanController extends Controller
 
     public function opcrForApproval(Request $request)
     {
+        $search = $request->query('search');
         $activePeriod = DB::table('active_period')->select('value')->first();
         try {
             $user = User::with(['_employee_profile._role._office', '_level'])
@@ -99,6 +122,10 @@ class StrategicPlanController extends Controller
                     ->toArray();
 
                 return StrategicPlan::with('_mfo', '_office._head._role', '_approvedBy._role._office', '_accountable._role')
+                    ->whereHas('_office', function (Builder $query) use ($search) {
+                        $query->where('name', 'like', '%' . $search . '%')
+                            ->orWhere('code', 'like', '%' . $search . '%');
+                    })
                     ->whereIn('office', $children)
                     ->where('period', $activePeriod->value)
                     ->whereIn('status', array(1, 2))
